@@ -1,0 +1,265 @@
+package fr.spleeth.launcher.ui.panels;
+
+import fr.spleeth.launcher.Main;
+import fr.spleeth.launcher.ui.PanelManager;
+import fr.spleeth.launcher.ui.panel.Panel;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Cursor;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class PanelLogin extends Panel {
+
+    @Override
+    public void init(PanelManager panelManager) {
+        super.init(panelManager);
+        GridPane loginPanel = new GridPane();
+        GridPane mainPanel = new GridPane();
+        GridPane bottomPanel = new GridPane();
+        AtomicBoolean connectWithMojang = new AtomicBoolean(true);
+
+        loginPanel.setMaxWidth(400);
+        loginPanel.setMinWidth(400);
+        loginPanel.setMaxHeight(580);
+        loginPanel.setMinHeight(580);
+
+        GridPane.setVgrow(loginPanel, Priority.ALWAYS);
+        GridPane.setHgrow(loginPanel, Priority.ALWAYS);
+        GridPane.setValignment(loginPanel, VPos.CENTER);
+        GridPane.setHalignment(loginPanel, HPos.CENTER);
+
+        RowConstraints bottomConstraints = new RowConstraints();
+        bottomConstraints.setValignment(VPos.BOTTOM);
+        bottomConstraints.setMaxHeight(55);
+        loginPanel.getRowConstraints().addAll(new RowConstraints(), bottomConstraints);
+        loginPanel.add(mainPanel,0,0);
+        loginPanel.add(bottomPanel,0,1);
+
+        GridPane.setVgrow(mainPanel, Priority.ALWAYS);
+        GridPane.setHgrow(mainPanel, Priority.ALWAYS);
+        GridPane.setValignment(mainPanel, VPos.CENTER);
+        GridPane.setHalignment(mainPanel, HPos.CENTER);
+
+        mainPanel.setStyle("-fx-background-color: #181818;");
+        bottomPanel.setStyle("-fx-background-color: #181818; -fx-opacity: 50%;");
+        bottomPanel.setMaxHeight(45);
+        bottomPanel.setMinHeight(45);
+        Label noAccount = new Label("Vous n'avez pas encore de compte ?");
+        Label registerHere = new Label("S'inscire ici");
+
+        GridPane.setVgrow(noAccount, Priority.ALWAYS);
+        GridPane.setHgrow(noAccount, Priority.ALWAYS);
+        GridPane.setValignment(noAccount, VPos.TOP);
+        GridPane.setHalignment(noAccount, HPos.CENTER);
+        noAccount.setStyle("-fx-text-fill: #bcc6e7; -fx-font-size: 14px;");
+
+        GridPane.setVgrow(registerHere, Priority.ALWAYS);
+        GridPane.setHgrow(registerHere, Priority.ALWAYS);
+        GridPane.setValignment(registerHere, VPos.BOTTOM);
+        GridPane.setHalignment(registerHere, HPos.CENTER);
+        registerHere.setStyle("-fx-text-fill: #69a7ed; -fx-font-size: 14px;");
+        registerHere.setUnderline(true);
+        registerHere.setTranslateY(-5);
+        registerHere.setOnMouseEntered(e->this.layout.setCursor(Cursor.HAND));
+        registerHere.setOnMouseExited(e->this.layout.setCursor(Cursor.DEFAULT));
+        registerHere.setOnMouseClicked(e->{
+            if(connectWithMojang.get()){
+                openUrl("https://my.minecraft.net/fr-fr/");
+            }else{
+                openUrl("https://valkyria-faction.fr");
+            }
+        });
+
+        bottomPanel.getChildren().addAll(noAccount,registerHere);
+        this.layout.getChildren().add(loginPanel);
+
+        Image img = new Image("https://i.imgur.com/ZDXDX4z.png");
+        ImageView imageView = new ImageView(img);
+        HBox naturaCraftLogo = new HBox(imageView);
+        GridPane.setVgrow(naturaCraftLogo, Priority.ALWAYS);
+        GridPane.setHgrow(naturaCraftLogo, Priority.ALWAYS);
+        GridPane.setValignment(naturaCraftLogo, VPos.TOP);
+        GridPane.setHalignment(naturaCraftLogo, HPos.CENTER);
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(50);
+        naturaCraftLogo.setTranslateY(25);
+        naturaCraftLogo.setTranslateX(45);
+
+        Separator usernameSeparator = new Separator();
+        GridPane.setVgrow(usernameSeparator, Priority.ALWAYS);
+        GridPane.setHgrow(usernameSeparator, Priority.ALWAYS);
+        GridPane.setValignment(usernameSeparator, VPos.TOP);
+        GridPane.setHalignment(usernameSeparator, HPos.CENTER);
+        usernameSeparator.setTranslateY(181);
+        usernameSeparator.setMinWidth(325);
+        usernameSeparator.setMaxWidth(325);
+        usernameSeparator.setMaxHeight(1);
+        usernameSeparator.setStyle("-fx-background-color: #fff; -fx-opacity: 50%;");
+
+        Separator passwordSeparator = new Separator();
+        GridPane.setVgrow(passwordSeparator, Priority.ALWAYS);
+        GridPane.setHgrow(passwordSeparator, Priority.ALWAYS);
+        GridPane.setValignment(passwordSeparator, VPos.TOP);
+        GridPane.setHalignment(passwordSeparator, HPos.CENTER);
+        passwordSeparator.setTranslateY(271);
+        passwordSeparator.setMinWidth(325);
+        passwordSeparator.setMaxWidth(325);
+        passwordSeparator.setMaxHeight(1);
+        passwordSeparator.setStyle("-fx-background-color: #fff; -fx-opacity: 50%;");
+
+        Label usernameLabel = new Label("Nom d'utilisateur");
+        GridPane.setVgrow(usernameLabel, Priority.ALWAYS);
+        GridPane.setHgrow(usernameLabel, Priority.ALWAYS);
+        GridPane.setValignment(usernameLabel, VPos.TOP);
+        GridPane.setHalignment(usernameLabel, HPos.LEFT);
+        usernameLabel.setStyle("-fx-text-fill: #95bad3; -fx-font-size: 14px;");
+        usernameLabel.setTranslateY(110);
+        usernameLabel.setTranslateX(37.5);
+
+        TextField usernameField = new TextField();
+        GridPane.setVgrow(usernameField, Priority.ALWAYS);
+        GridPane.setHgrow(usernameField, Priority.ALWAYS);
+        GridPane.setValignment(usernameField, VPos.TOP);
+        GridPane.setHalignment(usernameField, HPos.LEFT);
+        usernameField.setStyle("-fx-background-color: #1e1e1e; -fx-font-size: 16px; -fx-text-fill: #e5e5e5;");
+        usernameField.setMaxWidth(325);
+        usernameField.setMaxHeight(40);
+        usernameField.setTranslateX(37.5);
+        usernameField.setTranslateY(140);
+
+        Label passwordLabel = new Label("Mot de passe");
+        GridPane.setVgrow(passwordLabel, Priority.ALWAYS);
+        GridPane.setHgrow(passwordLabel, Priority.ALWAYS);
+        GridPane.setValignment(passwordLabel, VPos.TOP);
+        GridPane.setHalignment(passwordLabel, HPos.LEFT);
+        passwordLabel.setStyle("-fx-text-fill: #95bad3; -fx-font-size: 14px;");
+        passwordLabel.setTranslateY(200);
+        passwordLabel.setTranslateX(37.5);
+
+        PasswordField passwordField = new PasswordField();
+        GridPane.setVgrow(passwordField, Priority.ALWAYS);
+        GridPane.setHgrow(passwordField, Priority.ALWAYS);
+        GridPane.setValignment(passwordField, VPos.TOP);
+        GridPane.setHalignment(passwordField, HPos.LEFT);
+        passwordField.setStyle("-fx-background-color: #1e1e1e; -fx-font-size: 16px; -fx-text-fill: #e5e5e5;");
+        passwordField.setMaxWidth(325);
+        passwordField.setMaxHeight(40);
+        passwordField.setTranslateX(37.5);
+        passwordField.setTranslateY(230);
+
+        Label forgotPasswordLabel = new Label("Mot de passe oublié ?");
+        GridPane.setVgrow(forgotPasswordLabel, Priority.ALWAYS);
+        GridPane.setHgrow(forgotPasswordLabel, Priority.ALWAYS);
+        GridPane.setValignment(forgotPasswordLabel, VPos.CENTER);
+        GridPane.setHalignment(forgotPasswordLabel, HPos.LEFT);
+        forgotPasswordLabel.setStyle("-fx-text-fill: #69a7ed; -fx-font-size: 12px");
+        forgotPasswordLabel.setUnderline(true);
+        forgotPasswordLabel.setTranslateX(37.5);
+        forgotPasswordLabel.setTranslateY(40);
+        forgotPasswordLabel.setOnMouseEntered(e->this.layout.setCursor(Cursor.HAND));
+        forgotPasswordLabel.setOnMouseExited(e->this.layout.setCursor(Cursor.DEFAULT));
+        forgotPasswordLabel.setOnMouseClicked(e->{
+            if(connectWithMojang.get()){
+                openUrl("https://www.minecraft.net/fr-fr/password/forgot");
+            }else{
+                openUrl("https://valkyria-faction.fr");
+            }
+        });
+
+        Button connectionButton = new Button("Se connecter");
+        GridPane.setVgrow(connectionButton, Priority.ALWAYS);
+        GridPane.setHgrow(connectionButton, Priority.ALWAYS);
+        GridPane.setValignment(connectionButton, VPos.CENTER);
+        GridPane.setHalignment(connectionButton, HPos.LEFT);
+        connectionButton.setTranslateX(37.5);
+        connectionButton.setTranslateY(80);
+        connectionButton.setMinWidth(325);
+        connectionButton.setMinHeight(50);
+        connectionButton.setStyle("-fx-background-color: #7cfc00; -fx-border-radius: 0px; -fx-background-insets: 0; -fx-font-size: 16px; -fx-text-fill: #000; -fx-font-weight: bold");
+        connectionButton.setOnMouseEntered(e->this.layout.setCursor(Cursor.HAND));
+        connectionButton.setOnMouseExited(e->this.layout.setCursor(Cursor.DEFAULT));
+        connectionButton.setOnMouseClicked(e->{
+            if(connectWithMojang.get()){
+                //TODO MOJANG
+            }else{
+                //TODO MINEWEB
+            }
+        });
+
+        Separator chooseConnectSeparator = new Separator();
+        GridPane.setVgrow(chooseConnectSeparator, Priority.ALWAYS);
+        GridPane.setHgrow(chooseConnectSeparator, Priority.ALWAYS);
+        GridPane.setValignment(chooseConnectSeparator, VPos.CENTER);
+        GridPane.setHalignment(chooseConnectSeparator, HPos.CENTER);
+        chooseConnectSeparator.setTranslateY(160);
+        chooseConnectSeparator.setMinWidth(325);
+        chooseConnectSeparator.setMaxWidth(325);
+        chooseConnectSeparator.setStyle("-fx-opacity: 30%");
+
+        Button chooseConnexionButton = new Button("CONNEXION AVEC");
+        GridPane.setVgrow(chooseConnexionButton, Priority.ALWAYS);
+        GridPane.setHgrow(chooseConnexionButton, Priority.ALWAYS);
+        GridPane.setValignment(chooseConnexionButton, VPos.CENTER);
+        GridPane.setHalignment(chooseConnexionButton, HPos.CENTER);
+        chooseConnexionButton.setTranslateY(160);
+        chooseConnexionButton.setStyle("-fx-background-color: #181818; -fx-text-fill: #5e5e5e; -fx-font-size: 14px");
+
+        Image logoImageMojang = new Image(Main.class.getResource("/resources/cib-mojang.png").toExternalForm());
+        ImageView imageViewMojang = new ImageView(logoImageMojang);
+        Image logoImageNC = new Image(Main.class.getResource("resources/NaturaCraft - logo.png").toExternalForm());
+        ImageView imageViewNC = new ImageView(logoImageNC);
+
+        Button mojangButton = new Button("Mojang");
+        GridPane.setVgrow(mojangButton, Priority.ALWAYS);
+        GridPane.setHgrow(mojangButton, Priority.ALWAYS);
+        GridPane.setValignment(mojangButton, VPos.CENTER);
+        GridPane.setHalignment(mojangButton, HPos.LEFT);
+        mojangButton.setTranslateX(37.5);
+        mojangButton.setTranslateY(210);
+        mojangButton.setMinWidth(140);
+        mojangButton.setMaxHeight(40);
+        mojangButton.setStyle("-fx-background-color: #34aa2f; -fx-border-radius: 0px; -fx-background-insets: 0; -fx-font-size: 14px; -fx-text-fill: #fff");
+        mojangButton.setGraphic(imageViewMojang);
+
+
+    mainPanel.getChildren().addAll(
+            naturaCraftLogo,
+            usernameLabel,
+            usernameField,
+            usernameSeparator,
+            passwordField,
+            passwordLabel,
+            passwordSeparator,
+            connectionButton,
+            forgotPasswordLabel,
+            chooseConnectSeparator,
+            chooseConnexionButton,
+            mojangButton
+    );
+    }
+
+    private void openUrl(String url){
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        }catch (IOException | URISyntaxException e){
+            Main.logger.warn(e.getMessage());
+        }
+    }
+
+}
